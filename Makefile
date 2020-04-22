@@ -13,6 +13,11 @@ test:
 	go test -v .
 .PHONY: test
 
+unit: ## Run tests
+	@echo -e "\033[32mTesting...\033[0m"
+	KUBEBUILDER_CONTROLPLANE_START_TIMEOUT=10m hack/ci-test.sh
+.PHONY: unit
+
 .PHONY: goimports
 goimports: ## Go fmt your code
 	hack/goimports.sh .
@@ -28,3 +33,4 @@ clean:
 test-e2e: ## Run e2e tests
 	hack/e2e.sh
 .PHONY: test-e2e
+
