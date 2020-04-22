@@ -6,8 +6,8 @@ require (
 	github.com/go-logr/zapr v0.1.1 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.2-0.20181231171920-c182affec369 // indirect
-	github.com/onsi/ginkgo v1.12.0 // indirect
-	github.com/onsi/gomega v1.9.0 // indirect
+	github.com/onsi/ginkgo v1.12.0
+	github.com/onsi/gomega v1.9.0
 	github.com/openshift/api v0.0.0-20200323095748-e7041f8762a3
 	github.com/openshift/client-go v0.0.0-20200320150128-a906f3d8e723
 	github.com/openshift/library-go v0.0.0-20200324092245-db2a8546af81
@@ -19,5 +19,5 @@ require (
 	k8s.io/apimachinery v0.18.0
 	k8s.io/client-go v0.18.0
 	k8s.io/klog v1.0.0
-	sigs.k8s.io/controller-runtime v0.5.1-0.20200422022352-2189d40ee002 // indirect
+	sigs.k8s.io/controller-runtime v0.5.1-0.20200422022352-2189d40ee002
 )
