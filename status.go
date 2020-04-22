@@ -25,11 +25,21 @@ import (
 )
 
 const (
-	clusterOperatorName      = "machine-approver"
-	clusterOperatorNamespace = "openshift-cluster-machine-approver"
-	unknownVersionValue      = "unknown"
-	queueKey                 = "trigger"
+	clusterOperatorName           = "machine-approver"
+	clusterOperatorNamespace      = "openshift-cluster-machine-approver"
+	unknownVersionValue           = "unknown"
+	queueKey                      = "trigger"
+	operatorVersionKey            = "operator"
+	releaseVersionEnvVariableName = "RELEASE_VERSION"
 )
+
+var relatedObjects = []osconfigv1.ObjectReference{
+	{
+		Group:    "",
+		Resource: "namespaces",
+		Name:     clusterOperatorNamespace,
+	},
+}
 
 type statusController struct {
 	queue                   workqueue.RateLimitingInterface
@@ -100,6 +110,9 @@ func (c *statusController) Run(threadiness int, stopCh chan struct{}) {
 // c.versionCh emits something every time c.versionGetter.SetVersion is called.
 func (c *statusController) watchVersionGetter(stopCh <-chan struct{}) {
 	defer utilruntime.HandleCrash()
+
+	// Always trigger at least once.
+	c.queue.Add(queueKey)
 
 	for {
 		select {
@@ -220,13 +233,6 @@ func (c *statusController) getOrCreateClusterOperator() (*osconfigv1.ClusterOper
 		return nil, fmt.Errorf("failed to get clusterOperator %q: %v", clusterOperatorName, err)
 	}
 
-	relatedObjects := []osconfigv1.ObjectReference{
-		{
-			Group:    "",
-			Resource: "namespaces",
-			Name:     clusterOperatorNamespace,
-		},
-	}
 	if !equality.Semantic.DeepEqual(co.Status.RelatedObjects, relatedObjects) {
 		co.Status.RelatedObjects = relatedObjects
 		co, err = c.clusterOperators.UpdateStatus(context.Background(), co, metav1.UpdateOptions{})
@@ -249,10 +255,10 @@ func (c *statusController) syncStatus(co *osconfigv1.ClusterOperator, conds []os
 }
 
 func getReleaseVersion() string {
-	releaseVersion := os.Getenv("RELEASE_VERSION")
+	releaseVersion := os.Getenv(releaseVersionEnvVariableName)
 	if len(releaseVersion) == 0 {
 		releaseVersion = unknownVersionValue
-		klog.Infof("RELEASE_VERSION environment variable is missing, defaulting to %q", unknownVersionValue)
+		klog.Infof("%s environment variable is missing, defaulting to %q", releaseVersionEnvVariableName, unknownVersionValue)
 	}
 	return releaseVersion
 }

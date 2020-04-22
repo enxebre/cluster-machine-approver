@@ -316,7 +316,7 @@ func main() {
 
 	statusController := NewStatusController(config)
 	go statusController.Run(1, stop)
-	statusController.versionGetter.SetVersion("operator", getReleaseVersion())
+	statusController.versionGetter.SetVersion(operatorVersionKey, getReleaseVersion())
 
 	// Wait forever
 	select {}
