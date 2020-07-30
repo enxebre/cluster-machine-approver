@@ -78,7 +78,7 @@ func NewController(config ClusterMachineApproverConfig, clientset *kubernetes.Cl
 
 		csrs:     clientset.CertificatesV1beta1().CertificateSigningRequests(),
 		nodes:    clientset.CoreV1().Nodes(),
-		machines: machineClientset.MachineV1beta1().Machines(machineAPINamespace),
+		machines: machineClientset.MachineV1beta1().Machines(""),
 
 		indexer:  indexer,
 		queue:    queue,
